@@ -12,7 +12,7 @@
     "url": "git+https://github.com/Yoshikatsu-Koyanagi/plusminusbutton.git"
   },
   "author": "",
-  //"files": [ "plusminusbutton"],
+  "files": [ "plusminusbutton"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Yoshikatsu-Koyanagi/plusminusbutton/issues"
