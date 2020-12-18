@@ -1,0 +1,21 @@
+{
+  "name": "plusminusbutton",
+  "version": "1.0.0",
+  "private": false,
+  "description": "",
+  "main": "index.js",
+    "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yoshikatsu-Koyanagi/plusminusbutton.git"
+  },
+  "author": "",
+  "files": [ "plusminusbutton"],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Yoshikatsu-Koyanagi/plusminusbutton/issues"
+  },
+  "homepage": "https://github.com/Yoshikatsu-Koyanagi/plusminusbutton#readme"
+}
