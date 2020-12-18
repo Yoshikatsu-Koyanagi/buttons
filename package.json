@@ -1,6 +1,6 @@
 {
   "name": "plusminusbutton",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "private": false,
   "description": "",
   "main": "index.js",
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/Yoshikatsu-Koyanagi/plusminusbutton.git"
   },
-  "author": "",
+  "author": "yoshikatsu",
   "files": [ "plusminusbutton"],
   "license": "MIT",
   "bugs": {
