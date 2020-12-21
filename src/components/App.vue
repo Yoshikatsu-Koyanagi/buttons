@@ -1,9 +1,5 @@
   <template>
-  
-    <div>
       <canvas ref="canv" id="cv" :width="width" :height="height" ></canvas>          
-    </div>
-  
 </template>
 
 <script>
@@ -274,7 +270,6 @@ export default {
   #cv {
     width: 100%;
     height: 100%;
-    background: #ff0000;
   }
 
 </style>
