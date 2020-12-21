@@ -1,7 +1,7 @@
   <template>
   
     <div>
-      <canvas ref="canv" id="cv" :width="width" :height="height"></canvas>          
+      <canvas ref="canv" id="cv" :width="width" :height="height" ></canvas>          
     </div>
   
 </template>
@@ -29,13 +29,16 @@ export default {
   },
   methods: {
     draw_plus_btn(plus_color){
-      this.context.clearRect(this.width-this.triangle_box_width, 0, this.triangle_box_width, this.height*0.5);
       //＋ボタンの枠
+      this.context.globalCompositeOperation = "destination-out";
       this.context.beginPath();
       this.context.moveTo(this.width-this.triangle_box_width*0.5, this.height*0.5-this.center_margin*0.5-this.triangle_height); 
       this.context.lineTo(this.width-this.triangle_box_width*0.5-this.triangle_width*0.5, this.height*0.5-this.center_margin*0.5); 
       this.context.lineTo(this.width-this.triangle_box_width*0.5+this.triangle_width*0.5, this.height*0.5-this.center_margin*0.5);
       this.context.closePath();	
+      this.context.fillStyle = "rgba(0,0,0,1)";
+      this.context.fill();
+      this.context.globalCompositeOperation = "source-over";
       this.context.lineWidth = this.flame_weight;
       this.context.strokeStyle = "rgb(0,0,0)"; 
       this.context.stroke();
@@ -55,14 +58,17 @@ export default {
       this.context.fillRect(this.width-this.triangle_box_width*0.5-this.line_width*0.5,this.height*0.5-this.center_margin*0.5-this.triangle_height*0.4-this.line_weight*0.5, this.line_width, this.line_weight);
     },
     draw_minus_btn(minus_color){
-
-      this.context.clearRect(this.width-this.triangle_box_width, this.height*0.5, this.triangle_box_width, this.height*0.5);
       //-ボタンの枠
+      this.context.globalCompositeOperation = "destination-out";
       this.context.beginPath();
       this.context.moveTo(this.width-this.triangle_box_width*0.5, this.height*0.5+this.center_margin*0.5+this.triangle_height); 
       this.context.lineTo(this.width-this.triangle_box_width*0.5-this.triangle_width*0.5, this.height*0.5+this.center_margin*0.5); 
       this.context.lineTo(this.width-this.triangle_box_width*0.5+this.triangle_width*0.5, this.height*0.5+this.center_margin*0.5);
       this.context.closePath();	
+      this.context.fillStyle = "rgba(0,0,0,1)";
+      this.context.fill();
+
+      this.context.globalCompositeOperation = "source-over";
       this.context.lineWidth = this.flame_weight;
       this.context.strokeStyle = "rgb(0,0,0)"; 
       this.context.stroke();
@@ -78,8 +84,8 @@ export default {
   
     },
     draw_1_btn(num_color){
-      this.context.clearRect(0, 0, this.num_box_width, this.height);
       //数字ボタンの枠
+      this.context.globalCompositeOperation = "destination-out";
       this.context.beginPath();
       this.context.moveTo(this.side_margin+this.r,this.top_margin);
       this.context.arc(this.side_margin+this.r, this.top_margin+this.r, this.r, Math.PI*1.5, Math.PI, true);  
@@ -90,7 +96,10 @@ export default {
       this.context.lineTo(this.num_box_width-this.side_margin,this.top_margin+this.r);
       this.context.arc(this.num_box_width-this.side_margin-this.r, this.top_margin+this.r, this.r, Math.PI*0, Math.PI*1.5, true); 
       this.context.closePath();
+      this.context.fillStyle = "rgba(0,0,0,1)";
+      this.context.fill();
 
+      this.context.globalCompositeOperation = "source-over";
       this.context.fillStyle = num_color;
       this.context.fill();
 
@@ -212,18 +221,23 @@ export default {
     this.line_width = this.triangle_height*this.line_ratio; //＋,-の線の長さ
     this.line_weight = this.flame_weight*this.line_weight_ratio; 
 
-
-    //+ボタンを作成
+    
     let a = this.$refs.canv;
     this.context = a.getContext('2d');
+    
+    this.gradient0 = this.context.createLinearGradient(this.width*0.5, 0, this.width*0.5, this.height);
+    this.gradient0.addColorStop(0.0 , 'rgba(0,50,255,0.05)');
+    this.gradient0.addColorStop(0.8 , 'rgba(0,50,255,0.25)');
+    this.context.fillStyle = this.gradient0;
+    this.context.fillRect(0,0,this.width,this.height);
+    
+    //+ボタンを作成
     let plus_color; //＋ボタンの色
-
     this.gradient = this.context.createLinearGradient(this.width-this.triangle_box_width*0.5,this.height*0.5-this.center_margin*0.5-this.triangle_height,this.width-this.triangle_box_width*0.5,this.height*0.5-this.center_margin*0.5);
     this.gradient.addColorStop(0.0 , 'rgba(0,0,0,0.35)');
     this.gradient.addColorStop(0.8 , 'rgba(0,0,0,0.05)');
     plus_color = this.gradient;
-    this.draw_plus_btn(plus_color);
-    
+    this.draw_plus_btn(plus_color);    
 
     //-ボタンを作成
     let minus_color; //-ボタンの色
@@ -260,6 +274,7 @@ export default {
   #cv {
     width: 100%;
     height: 100%;
+    background: #ff0000;
   }
 
 </style>
