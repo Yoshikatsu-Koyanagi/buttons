@@ -1,4 +1,4 @@
-<template>
+  <template>
   
     <div>
       <canvas ref="canv" id="cv" :width="width" :height="height"></canvas>          
@@ -8,225 +8,250 @@
 
 <script>
 export default {
-  props:["width", "height"],
+  props: ["width", "height","min","max","initial"],
   data() {
     return {
+      amount: 0, //個数
+      num_box_ratio: 0.6,//数字ボタンのエリアの横幅の割合
+      triangle_ratio_width: 0.9, //三角ボタンのエリアの横幅に対する三角ボタンの横幅の割合
+      triangle_ratio_height: 0.3, //三角ボタンのエリアの高さに対する三角ボタンの高さの割合
+      triangle_margin_ratio: 0.1, //三角ボタン間の高さの三角ボタンのエリア割合
+      flame_weight_ratio: 0.01, //キャンバスの横幅に対するボタンの枠の太さの割合
+      line_ratio: 0.5, //三角ボタンの高さに対する＋,-の線の長さの割合
+      line_weight_ratio: 0.8, //ボタンの枠の太さに対する＋,-の線の太さ
+      num_btn_ratio_width: 0.75, //数字ボタンエリアの横幅に対する数字ボタンの横幅の割合
+      num_btn_ratio_height: 0.5, //数字ボタンエリアの高さに対する数字ボタンの高さの割合
+      font_ratio: 0.8, //数字ボタンの高さに対するフォントサイズの割合
+      font_name: "meirio", //フォントの書体
+      r: 10, //数字ボタンの枠の角の半径
       
     }
   },
   methods: {
-    draw_plus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context,plus_color){
-      context.clearRect(width-triangle_box_width, 0, triangle_box_width, height*0.5);
+    draw_plus_btn(plus_color){
+      this.context.clearRect(this.width-this.triangle_box_width, 0, this.triangle_box_width, this.height*0.5);
       //＋ボタンの枠
-      context.beginPath();
-      context.moveTo(width-triangle_box_width*0.5, height*0.5-center_margin*0.5-triangle_height); 
-      context.lineTo(width-triangle_box_width*0.5-triangle_width*0.5, height*0.5-center_margin*0.5); 
-      context.lineTo(width-triangle_box_width*0.5+triangle_width*0.5, height*0.5-center_margin*0.5);
-      context.closePath();	
-      context.lineWidth = flame_weight;
-      context.strokeStyle = "rgb(0,0,0)"; 
-      context.stroke();
-      context.fillStyle = plus_color;
-      context.fill();
+      this.context.beginPath();
+      this.context.moveTo(this.width-this.triangle_box_width*0.5, this.height*0.5-this.center_margin*0.5-this.triangle_height); 
+      this.context.lineTo(this.width-this.triangle_box_width*0.5-this.triangle_width*0.5, this.height*0.5-this.center_margin*0.5); 
+      this.context.lineTo(this.width-this.triangle_box_width*0.5+this.triangle_width*0.5, this.height*0.5-this.center_margin*0.5);
+      this.context.closePath();	
+      this.context.lineWidth = this.flame_weight;
+      this.context.strokeStyle = "rgb(0,0,0)"; 
+      this.context.stroke();
+      this.context.fillStyle = plus_color;
+      this.context.fill();
 
-      //＋ボタンの"＋"の縦棒
-      context.strokeStyle = "rgb(0,0,0)"; 
-      context.stroke();
-      context.fillStyle="rgba(0,0,0,1)";
-      context.fillRect(width-triangle_box_width*0.5-line_weight*0.5, height*0.5-center_margin*0.5-triangle_height*0.4-line_width*0.5, line_weight, line_width);
+      //＋ボタンの"＋"の縦棒 
+      this.context.strokeStyle = "rgb(0,0,0)"; 
+      this.context.stroke();
+      this.context.fillStyle="rgba(0,0,0,1)";
+      this.context.fillRect(this.width-this.triangle_box_width*0.5-this.line_weight*0.5, this.height*0.5-this.center_margin*0.5-this.triangle_height*0.4-this.line_width*0.5, this.line_weight, this.line_width);
 
       //＋ボタンの"＋"の横棒
-      context.strokeStyle = "rgb(0,0,0)"; 
-      context.stroke();
-      context.fillStyle="rgba(0,0,0,1)";
-      context.fillRect(width-triangle_box_width*0.5-line_width*0.5,height*0.5-center_margin*0.5-triangle_height*0.4- line_weight*0.5, line_width, line_weight);
+      this.context.strokeStyle = "rgb(0,0,0)"; 
+      this.context.stroke();
+      this.context.fillStyle="rgba(0,0,0,1)";
+      this.context.fillRect(this.width-this.triangle_box_width*0.5-this.line_width*0.5,this.height*0.5-this.center_margin*0.5-this.triangle_height*0.4-this.line_weight*0.5, this.line_width, this.line_weight);
     },
-    draw_minus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context2,minus_color){
+    draw_minus_btn(minus_color){
 
-      context2.clearRect(width-triangle_box_width, height*0.5, triangle_box_width, height*0.5);
+      this.context.clearRect(this.width-this.triangle_box_width, this.height*0.5, this.triangle_box_width, this.height*0.5);
       //-ボタンの枠
-      context2.beginPath();
-      context2.moveTo(width-triangle_box_width*0.5, height*0.5+center_margin*0.5+triangle_height); 
-      context2.lineTo(width-triangle_box_width*0.5-triangle_width*0.5, height*0.5+center_margin*0.5); 
-      context2.lineTo(width-triangle_box_width*0.5+triangle_width*0.5, height*0.5+center_margin*0.5);
-      context2.closePath();	
-      context2.lineWidth = flame_weight;
-      context2.strokeStyle = "rgb(0,0,0)"; 
-      context2.stroke();
+      this.context.beginPath();
+      this.context.moveTo(this.width-this.triangle_box_width*0.5, this.height*0.5+this.center_margin*0.5+this.triangle_height); 
+      this.context.lineTo(this.width-this.triangle_box_width*0.5-this.triangle_width*0.5, this.height*0.5+this.center_margin*0.5); 
+      this.context.lineTo(this.width-this.triangle_box_width*0.5+this.triangle_width*0.5, this.height*0.5+this.center_margin*0.5);
+      this.context.closePath();	
+      this.context.lineWidth = this.flame_weight;
+      this.context.strokeStyle = "rgb(0,0,0)"; 
+      this.context.stroke();
       
-      context2.fillStyle = minus_color;
-      context2.fill();
+      this.context.fillStyle = minus_color;
+      this.context.fill();
    
       //-ボタンの"-"
-      context2.strokeStyle = "rgb(0,0,0)"; 
-      context2.stroke();
-      context2.fillStyle = "rgba(0,0,0,1)";
-      context2.fillRect(width-triangle_box_width*0.5-line_width*0.5, height*0.5+center_margin*0.5+triangle_height*0.4-line_weight*0.5, line_width, line_weight);
+      this.context.strokeStyle = "rgb(0,0,0)"; 
+      this.context.stroke();
+      this.context.fillStyle = "rgba(0,0,0,1)";
+      this.context.fillRect(this.width-this.triangle_box_width*0.5-this.line_width*0.5, this.height*0.5+this.center_margin*0.5+this.triangle_height*0.4-this.line_weight*0.5, this.line_width, this.line_weight);
   
     },
-    draw_1_btn(width,height,num_box_width,num_btn_ratio_width,num_btn_ratio_height,side_margin,top_margin,font_size,font,r,flame_weight,context3,num_color){
-      context3.clearRect(0, 0, num_box_width, height);
-      //1ボタンの枠
-      context3.beginPath();
-      context3.moveTo(side_margin+r,top_margin);
-      context3.arc(side_margin+r, top_margin+r, r, Math.PI*1.5, Math.PI, true);  
-      context3.lineTo(side_margin, height-top_margin-r);
-      context3.arc(side_margin+r, height-top_margin-r, r, Math.PI, Math.PI*0.5, true); 
-      context3.lineTo(num_box_width-side_margin-r,height-top_margin);
-      context3.arc(num_box_width-side_margin-r, height-top_margin-r, r, Math.PI*0.5, Math.PI*0, true); 
-      context3.lineTo(num_box_width-side_margin,top_margin+r);
-      context3.arc(num_box_width-side_margin-r, top_margin+r, r, Math.PI*0, Math.PI*1.5, true); 
-      context3.closePath();
+    draw_1_btn(num_color){
+      this.context.clearRect(0, 0, this.num_box_width, this.height);
+      //数字ボタンの枠
+      this.context.beginPath();
+      this.context.moveTo(this.side_margin+this.r,this.top_margin);
+      this.context.arc(this.side_margin+this.r, this.top_margin+this.r, this.r, Math.PI*1.5, Math.PI, true);  
+      this.context.lineTo(this.side_margin, this.height-this.top_margin-this.r);
+      this.context.arc(this.side_margin+this.r, this.height-this.top_margin-this.r, this.r, Math.PI, Math.PI*0.5, true); 
+      this.context.lineTo(this.num_box_width-this.side_margin-this.r,this.height-this.top_margin);
+      this.context.arc(this.num_box_width-this.side_margin-this.r, this.height-this.top_margin-this.r, this.r, Math.PI*0.5, Math.PI*0, true); 
+      this.context.lineTo(this.num_box_width-this.side_margin,this.top_margin+this.r);
+      this.context.arc(this.num_box_width-this.side_margin-this.r, this.top_margin+this.r, this.r, Math.PI*0, Math.PI*1.5, true); 
+      this.context.closePath();
 
-      context3.fillStyle = num_color;
-      context3.fill();
+      this.context.fillStyle = num_color;
+      this.context.fill();
 
-      //1ボタンの"1"
-      context3.font = font;
-      context3.fillStyle = "rgba(0,0,0,1)";
-      context3.textAlign = "center";
-      context3.fillText('5', num_box_width*0.5, top_margin+height*num_btn_ratio_height*0.8,num_box_width*num_btn_ratio_width);
+      //数字ボタンの"数字"
+      this.context.font = this.font;
+      this.context.fillStyle = "rgba(0,0,0,1)";
+      this.context.textAlign = "center";
+      this.context.fillText(this.amount, this.num_box_width*0.5, this.top_margin+this.height*this.num_btn_ratio_height*0.8,this.num_box_width*this.num_btn_ratio_width);
     
-      context3.lineWidth = flame_weight;	
-      context3.strokeStyle = "rgb(0,0,0)"; 
-      context3.stroke();
+      this.context.lineWidth = this.flame_weight;	
+      this.context.strokeStyle = "rgb(0,0,0)"; 
+      this.context.stroke();
     },
-    click_res(width,height,num_box_width,triangle_box_width,triangle_width,triangle_height,center_margin,side_margin,top_margin,flame_weight,line_width,line_weight,context,context2,context3,plus_color,minus_color,num_color,gradient,gradient2,gradient3,font_size,font,r,num_btn_ratio_width,num_btn_ratio_height){
-      let x = 0; //クリックされた場所のキャンバス中のx座標
-      let y = 0; //クリックされた場所のキャンバス中のy座標
-      let k1 = triangle_height/(triangle_width*0.5)*(-1); //＋ボタンの左斜辺の式の傾き
+    click_res(plus_color,minus_color,num_color){
+      let x = 0; //クリック押された場所のキャンバス中のx座標
+      let y = 0; //クリック押された場所のキャンバス中のy座標
+      let x2 = 0; //クリックが離された場所のキャンバス中のx座標
+      let y2 = 0; //クリック離された場所のキャンバス中のy座標
+      let num_down = false; //数字ボタンが押されているか
+      let k1 = this.triangle_height/(this.triangle_width*0.5)*(-1); //＋ボタンの左斜辺の式の傾き
       let k2 = k1*(-1); //＋ボタンの右斜辺の式の傾き
       let k3 = k2; //-ボタンの左斜辺の式の傾き
       let k4 = k1; //-ボタンの右斜辺の式の傾き
-      let b1 = height*0.5-center_margin*0.5-triangle_height - k1*(width-triangle_box_width*0.5); //＋ボタンの左斜辺の式の切片
-      let b2 = height*0.5-center_margin*0.5-triangle_height - k2*(width-triangle_box_width*0.5); //＋ボタンの右斜辺の式の切片
-      let b3 = height*0.5+center_margin*0.5+triangle_height - k3*(width-triangle_box_width*0.5); //―ボタンの左斜辺の式の切片
-      let b4 = height*0.5+center_margin*0.5+triangle_height - k4*(width-triangle_box_width*0.5); //―ボタンの右斜辺の式の切片
+      let b1 = this.height*0.5-this.center_margin*0.5-this.triangle_height - k1*(this.width-this.triangle_box_width*0.5); //＋ボタンの左斜辺の式の切片
+      let b2 = this.height*0.5-this.center_margin*0.5-this.triangle_height - k2*(this.width-this.triangle_box_width*0.5); //＋ボタンの右斜辺の式の切片
+      let b3 = this.height*0.5+this.center_margin*0.5+this.triangle_height - k3*(this.width-this.triangle_box_width*0.5); //―ボタンの左斜辺の式の切片
+      let b4 = this.height*0.5+this.center_margin*0.5+this.triangle_height - k4*(this.width-this.triangle_box_width*0.5); //―ボタンの右斜辺の式の切片
 
 
       let d = this.$refs.canv;
       //クリックされた座標を取得
       d.onmousedown = (e) => {
-        let rect = e.target.getBoundingClientRect();
-        x = e.clientX - Math.floor(rect.left);
-        y = e.clientY - Math.floor(rect.top);
+        let rectdown = e.target.getBoundingClientRect();
+        x = e.clientX - Math.floor(rectdown.left);
+        y = e.clientY - Math.floor(rectdown.top);
+
         //+ボタン
-        if(width-triangle_box_width*0.5-triangle_width*0.5<x && x<width-triangle_box_width*0.5+triangle_width*0.5 && height*0.5-center_margin*0.5-triangle_height<y && y<height*0.5-center_margin*0.5 && k1*x+b1<y && k2*x+b2<y) {
-          console.log("plus");
-          this.$emit('upclick')
+        if(this.width-this.triangle_box_width*0.5-this.triangle_width*0.5<x && x<this.width-this.triangle_box_width*0.5+this.triangle_width*0.5 && this.height*0.5-this.center_margin*0.5-this.triangle_height<y && y<this.height*0.5-this.center_margin*0.5 && k1*x+b1<y && k2*x+b2<y) {      
+          if(this.amount < this.max) {
+            this.amount++;
+            }
+          else {
+          }
           plus_color = "rgba(0,0,0,0.4)";
-          this.draw_plus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context,plus_color);
+          this.draw_plus_btn(plus_color);
+
         }
         //―ボタン
-        else if(width-triangle_box_width*0.5-triangle_width*0.5<x && x<width-triangle_box_width*0.5+triangle_width*0.5 && height*0.5+center_margin*0.5<y && y<height*0.5+center_margin*0.5+triangle_height && y<k3*x+b3 && y<k4*x+b4){
-          console.log("minus");
+        else if(this.width-this.triangle_box_width*0.5-this.triangle_width*0.5<x && x<this.width-this.triangle_box_width*0.5+this.triangle_width*0.5 && this.height*0.5+this.center_margin*0.5<y && y<this.height*0.5+this.center_margin*0.5+this.triangle_height && y<k3*x+b3 && y<k4*x+b4){
+          if(this.amount >  this.min) {
+            this.amount--;
+          }
+          else {
+          }
           minus_color = "rgba(0,0,0,0.4)";
-          this.draw_minus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context2,minus_color);         
+          this.draw_minus_btn(minus_color);         
         }
-        //1ボタン
-        else if(side_margin<x && x<num_box_width-side_margin && top_margin<y && y<height-top_margin) {
-          console.log("1");
-          let gradient6 = context3.createLinearGradient(num_box_width*0.5,top_margin,num_box_width*0.5,height-top_margin);
+        //数字ボタン 
+        else if(this.side_margin<x && x<this.num_box_width-this.side_margin && this.top_margin<y && y<this.height-this.top_margin) {
+          //this.$emit('numbuttonclick', this.amount)
+          let gradient6 = this.context.createLinearGradient(this.num_box_width*0.5,this.top_margin,this.num_box_width*0.5,this.height-this.top_margin);
           gradient6.addColorStop(0.0 , 'rgba(0,0,0,0.5)');
           gradient6.addColorStop(0.8 , 'rgba(0,0,0,0.3)');
           num_color = gradient6;
-          this.draw_1_btn(width,height,num_box_width,num_btn_ratio_width,num_btn_ratio_height,side_margin,top_margin,font_size,font,r,flame_weight,context3,num_color);
+          this.draw_1_btn(num_color);
+          
+          return num_down = true;
         }
         //それ以外
         else {
-          console.log(`x=${x}, y=${y}`);
         }
       }
       d.onmouseup = (e) => {
+        let rectup = e.target.getBoundingClientRect();
+        x2 = e.clientX - Math.floor(rectup.left);
+        y2 = e.clientY - Math.floor(rectup.top);
+
         //+ボタン
-        plus_color = gradient;
-        this.draw_plus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context,plus_color);
+        plus_color = this.gradient;
+        this.draw_plus_btn(plus_color);
         //―ボタン
-        minus_color = gradient2;
-        this.draw_minus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context2,minus_color); 
-        //1ボタン
-        num_color = gradient3;
-        this.draw_1_btn(width,height,num_box_width,num_btn_ratio_width,num_btn_ratio_height,side_margin,top_margin,font_size,font,r,flame_weight,context3,num_color);
+        minus_color = this.gradient2;
+        this.draw_minus_btn(minus_color); 
+        //数字ボタン
+        num_color = this.gradient3;
+        this.draw_1_btn(num_color);
+        //数字ボタンが押されて且つ数字ボタン上で離されたとき
+        if (num_down == true && this.side_margin<x2 && x2<this.num_box_width-this.side_margin && this.top_margin<y2 && y2<this.height-this.top_margin) {
+          this.$emit('numbuttonclick', this.amount);        
+        }
       }
       d.onmouseout = (e) => {
         //+ボタン
-        plus_color = gradient;
-        this.draw_plus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context,plus_color);
+        plus_color = this.gradient;
+        this.draw_plus_btn(plus_color);
         //―ボタン
-        minus_color = gradient2;
-        this.draw_minus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context2,minus_color); 
-        //1ボタン
-        num_color = gradient3;
-        this.draw_1_btn(width,height,num_box_width,num_btn_ratio_width,num_btn_ratio_height,side_margin,top_margin,font_size,font,r,flame_weight,context3,num_color);
+        minus_color = this.gradient2;
+        this.draw_minus_btn(minus_color); 
+        //数字ボタン
+        num_color = this.gradient3;
+        this.draw_1_btn(num_color);
       }
     }
   },
   mounted() {
-    let width = this.width; //canvasの横幅
-    let height = this.height; //canvasの高さ
+    this.amount = this.initial
 
-    let num_box_ratio = 0.6; //1ボタンのエリアの横幅の割合
-    let num_box_width = width*num_box_ratio; //1ボタンのエリアの横幅
+    this.num_box_width = this.width*this.num_box_ratio; //数字ボタンのエリアの横幅
 
-    let triangle_box_ratio = 1-num_box_ratio; //三角ボタンのエリアの横幅の割合
-    let triangle_box_width = width*triangle_box_ratio; //三角ボタンのエリアの横幅
-    let triangle_ratio_width = 0.9; //三角ボタンのエリアの横幅に対する三角ボタンの横幅の割合
-    let triangle_ratio_height = 0.3; //三角ボタンのエリアの高さに対する三角ボタンの高さの割合
-    let triangle_width = triangle_box_width*triangle_ratio_width; //三角ボタンの横幅
-    let triangle_height = height*triangle_ratio_height; //三角ボタンの高さ
-    let center_margin = height*0.1; //三角ボタン間の幅
-    let flame_weight = width*0.01 //ボタンの枠の太さ
+    this.triangle_box_ratio = 1-this.num_box_ratio; //三角ボタンのエリアの横幅の割合
+    this.triangle_box_width = this.width*this.triangle_box_ratio; //三角ボタンのエリアの横幅
+    
+    this.triangle_width = this.triangle_box_width*this.triangle_ratio_width; //三角ボタンの横幅
+    this.triangle_height = this.height*this.triangle_ratio_height; //三角ボタンの高さ
+    this.center_margin = this.height*this.triangle_margin_ratio; //三角ボタン間の幅
+    this.flame_weight = this.width*this.flame_weight_ratio //ボタンの枠の太さ
 
-    let line_ratio = 0.5; //三角ボタンの高さに対する＋,-の線の長さの割合
-    let line_width = triangle_height*line_ratio; //＋,-の線の長さ
-    let line_weight = flame_weight*0.8; //＋,-の線の太さ
+    
+    this.line_width = this.triangle_height*this.line_ratio; //＋,-の線の長さ
+    this.line_weight = this.flame_weight*this.line_weight_ratio; 
 
 
     //+ボタンを作成
     let a = this.$refs.canv;
-    let context = a.getContext('2d');
-    let plus_color;
+    this.context = a.getContext('2d');
+    let plus_color; //＋ボタンの色
 
-    let gradient = context.createLinearGradient(width-triangle_box_width*0.5,height*0.5-center_margin*0.5-triangle_height,width-triangle_box_width*0.5,height*0.5-center_margin*0.5);
-    gradient.addColorStop(0.0 , 'rgba(0,0,0,0.35)');
-    gradient.addColorStop(0.8 , 'rgba(0,0,0,0.05)');
-    plus_color = gradient;
-    this.draw_plus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context,plus_color);
+    this.gradient = this.context.createLinearGradient(this.width-this.triangle_box_width*0.5,this.height*0.5-this.center_margin*0.5-this.triangle_height,this.width-this.triangle_box_width*0.5,this.height*0.5-this.center_margin*0.5);
+    this.gradient.addColorStop(0.0 , 'rgba(0,0,0,0.35)');
+    this.gradient.addColorStop(0.8 , 'rgba(0,0,0,0.05)');
+    plus_color = this.gradient;
+    this.draw_plus_btn(plus_color);
     
 
     //-ボタンを作成
-    let b = this.$refs.canv;
-    let context2 = b.getContext('2d');
-    let minus_color;
+    let minus_color; //-ボタンの色
 
-    let gradient2 = context2.createLinearGradient(width-triangle_box_width*0.5, height*0.5+center_margin*0.5+triangle_height, width-triangle_box_width*0.5, height*0.5+center_margin*0.5);
-    gradient2.addColorStop(0.0, 'rgba(0,0,0,0.35)');
-    gradient2.addColorStop(0.8 , 'rgba(0,0,0,0.05)');
-    minus_color = gradient2;
-    this.draw_minus_btn(width,height,triangle_box_width,triangle_width,triangle_height,center_margin,flame_weight,line_width,line_weight,context2,minus_color);
+    this.gradient2 = this.context.createLinearGradient(this.width-this.triangle_box_width*0.5, this.height*0.5+this.center_margin*0.5+this.triangle_height, this.width-this.triangle_box_width*0.5, this.height*0.5+this.center_margin*0.5);
+    this.gradient2.addColorStop(0.0, 'rgba(0,0,0,0.35)');
+    this.gradient2.addColorStop(0.8 , 'rgba(0,0,0,0.05)');
+    minus_color = this.gradient2 
+    this.draw_minus_btn(minus_color);
     
-
-    let num_btn_ratio_width = 0.75; //1ボタンエリアの横幅に対する1ボタンの横幅の割合
-    let num_btn_ratio_height = 0.5; //1ボタンエリアの高さに対する1ボタンの高さの割合
-    let side_margin = num_box_width*(1-num_btn_ratio_width)*0.5; //1ボタンエリアと1ボタンの間の横幅
-    let top_margin = height*(1-num_btn_ratio_height)*0.5; //1ボタンエリアと1ボタンの間の高さ
-    let font_ratio = 0.8; //1ボタンの高さに対するフォントサイズの割合
-    let font_size = height*num_btn_ratio_height*font_ratio; //フォントサイズ
-    const font = `${font_size}px meirio`; //フォントサイズと書体
-    let r = 10; //1ボタンの枠の角の半径
-    //1ボタンを作成
-    let c = this.$refs.canv;
-    let context3 = c.getContext('2d');
-    let num_color;
-
-    let gradient3 = context3.createLinearGradient(num_box_width*0.5,top_margin,num_box_width*0.5,height-top_margin);
-    gradient3.addColorStop(0.0 , 'rgba(0,0,0,0.35)');
-    gradient3.addColorStop(0.8 , 'rgba(0,0,0,0.05)');
-    num_color = gradient3;
-    this.draw_1_btn(width,height,num_box_width,num_btn_ratio_width,num_btn_ratio_height,side_margin,top_margin,font_size,font,r,flame_weight,context3,num_color);
+    //数字ボタンを作成
+    
+    this.side_margin = this.num_box_width*(1-this.num_btn_ratio_width)*0.5; //数字ボタンエリアと数字ボタンの間の横幅
+    this.top_margin = this.height*(1-this.num_btn_ratio_height)*0.5; //数字ボタンエリアと数字ボタンの間の高さ
+    
+    this.font_size = this.height*this.num_btn_ratio_height*this.font_ratio; //フォントサイズ
+    this.font = `${this.font_size}px ${this.font_name}`; //フォントサイズと書体    
+    
+    let num_color; //数字ボタンの色
+    this.gradient3 = this.context.createLinearGradient(this.num_box_width*0.5,this.top_margin,this.num_box_width*0.5,this.height-this.top_margin);
+    this.gradient3.addColorStop(0.0 , 'rgba(0,0,0,0.35)');
+    this.gradient3.addColorStop(0.8 , 'rgba(0,0,0,0.05)');
+    num_color = this.gradient3;
+    this.draw_1_btn(num_color);
+    
     //クリックされたら
-    this.click_res(width,height,num_box_width,triangle_box_width,triangle_width,triangle_height,center_margin,side_margin,top_margin,flame_weight,line_width,line_weight,context,context2,context3,plus_color,minus_color,num_color,gradient,gradient2,gradient3,font_size,font,r,num_btn_ratio_width,num_btn_ratio_height);
-
+    this.click_res(plus_color,minus_color,num_color);
+    
   }
 }
 </script>
