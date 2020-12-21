@@ -1,5 +1,5 @@
   <template>
-      <canvas ref="canv" id="cv" :width="width" :height="height" ></canvas>          
+      <canvas ref="canv" :width="width" :height="height"></canvas>          
 </template>
 
 <script>
@@ -20,7 +20,6 @@ export default {
       font_ratio: 0.8, //数字ボタンの高さに対するフォントサイズの割合
       font_name: "meirio", //フォントの書体
       r: 10, //数字ボタンの枠の角の半径
-      
     }
   },
   methods: {
@@ -261,15 +260,9 @@ export default {
     
     //クリックされたら
     this.click_res(plus_color,minus_color,num_color);
-    
   }
 }
 </script>
 
 <style scoped>
-  #cv {
-    width: 100%;
-    height: 100%;
-  }
-
 </style>
