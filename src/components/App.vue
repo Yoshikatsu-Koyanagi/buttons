@@ -1,10 +1,12 @@
   <template>
-      <canvas ref="canv" :width="width" :height="height"></canvas>          
+      <div>
+        <canvas ref="canv" id="#cv" :width="width" :height="height"></canvas>  
+      </div>        
 </template>
 
 <script>
 export default {
-  props: ["width", "height","min","max","initial"],
+  props: ["width","height","min","max","initial"],
   data() {
     return {
       amount: 0, //個数
@@ -33,6 +35,7 @@ export default {
       this.context.closePath();	
       this.context.fillStyle = "rgba(0,0,0,1)";
       this.context.fill();
+
       this.context.globalCompositeOperation = "source-over";
       this.context.lineWidth = this.flame_weight;
       this.context.strokeStyle = "rgb(0,0,0)"; 
@@ -206,19 +209,16 @@ export default {
 
     this.triangle_box_ratio = 1-this.num_box_ratio; //三角ボタンのエリアの横幅の割合
     this.triangle_box_width = this.width*this.triangle_box_ratio; //三角ボタンのエリアの横幅
-    
     this.triangle_width = this.triangle_box_width*this.triangle_ratio_width; //三角ボタンの横幅
     this.triangle_height = this.height*this.triangle_ratio_height; //三角ボタンの高さ
     this.center_margin = this.height*this.triangle_margin_ratio; //三角ボタン間の幅
     this.flame_weight = this.width*this.flame_weight_ratio //ボタンの枠の太さ
 
-    
     this.line_width = this.triangle_height*this.line_ratio; //＋,-の線の長さ
-    this.line_weight = this.flame_weight*this.line_weight_ratio; 
+    this.line_weight = this.flame_weight*this.line_weight_ratio; //＋,-の線の太さ
 
-    
-    let a = this.$refs.canv;
-    this.context = a.getContext('2d');
+    let canvas = this.$refs.canv;
+    this.context = canvas.getContext('2d');
     
     this.gradient0 = this.context.createLinearGradient(this.width*0.5, 0, this.width*0.5, this.height);
     this.gradient0.addColorStop(0.0 , 'rgba(0,50,255,0.05)');
@@ -236,7 +236,6 @@ export default {
 
     //-ボタンを作成
     let minus_color; //-ボタンの色
-
     this.gradient2 = this.context.createLinearGradient(this.width-this.triangle_box_width*0.5, this.height*0.5+this.center_margin*0.5+this.triangle_height, this.width-this.triangle_box_width*0.5, this.height*0.5+this.center_margin*0.5);
     this.gradient2.addColorStop(0.0, 'rgba(0,0,0,0.35)');
     this.gradient2.addColorStop(0.8 , 'rgba(0,0,0,0.05)');
@@ -244,13 +243,10 @@ export default {
     this.draw_minus_btn(minus_color);
     
     //数字ボタンを作成
-    
     this.side_margin = this.num_box_width*(1-this.num_btn_ratio_width)*0.5; //数字ボタンエリアと数字ボタンの間の横幅
     this.top_margin = this.height*(1-this.num_btn_ratio_height)*0.5; //数字ボタンエリアと数字ボタンの間の高さ
-    
     this.font_size = this.height*this.num_btn_ratio_height*this.font_ratio; //フォントサイズ
     this.font = `${this.font_size}px ${this.font_name}`; //フォントサイズと書体    
-    
     let num_color; //数字ボタンの色
     this.gradient3 = this.context.createLinearGradient(this.num_box_width*0.5,this.top_margin,this.num_box_width*0.5,this.height-this.top_margin);
     this.gradient3.addColorStop(0.0 , 'rgba(0,0,0,0.35)');
